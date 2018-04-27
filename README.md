@@ -34,37 +34,37 @@ python create_verification_set.py
 ### 训练  
 python train.py  
 参数设置  
-    - train_dir: 文件夹地址   
+&emsp;&emsp; * train_dir: 文件夹地址   
     训练集的位置，默认为 train_s  
-    - checkpoint_path: 文件夹地址  
+&emsp;&emsp; * checkpoint_path: 文件夹地址  
     checkpoint保存位置，默认为 checkpoint  
-    - data_preprocess: 0..8   
+&emsp;&emsp; * data_preprocess: 0..8   
     数据预处理方式，默认为 8。0为初始处理；1为图像标准化处理；2为长宽分别裁剪4/5；3为长宽分别裁剪3/4。  
     4-8在长宽分别裁剪3/4的基础上：4增加了随机水平翻转；5增加了随机覆盖；6增加了随机亮度与对比度；  
     7增加了随机饱和度与色差；8增加了随机水平翻转，随机亮度与对比度  
-    - net_mode: 0..2  
+&emsp;&emsp; * net_mode: 0..2  
     网络结构，默认为 0。0为Resnet_v2_18；1为Resnet_v2_34；2为Resnet_v2_50  
-    - opt_mode: 0..2  
+&emsp;&emsp; * opt_mode: 0..2  
     优化器类型，默认为 1。0为GradientDescentOptimizer；1为MomentumOptimizer；2为AdamOptimizer  
-    - lr_mode: 0..5  
+&emsp;&emsp; * lr_mode: 0..5  
     学习速率，默认为 1。0为固定0.01；1为固定0.001；2为固定0.0001；3为固定比率衰减；4为自动衰减；5为周期性余弦衰减  
-    - batch_size: 正整数  
+&emsp;&emsp; * batch_size: 正整数  
     每批次数据大小，默认为64  
           
 ### 验证  
 python verify.py  
 参数设置  
-    - checkpoint_path: 文件夹地址  
+&emsp;&emsp; * checkpoint_path: 文件夹地址  
         checkpoint保存位置  
-    - net_mode: 0..2  
+&emsp;&emsp; * net_mode: 0..2  
        网络结构，默认为 0。0为Resnet_v2_18；1为Resnet_v2_34；2为Resnet_v2_50  
           
 ### 测试，结果输出到本目录下 output.csv  
 python test.py  
     参数设置  
-    - checkpoint_path: 文件夹地址  
+&emsp;&emsp; * checkpoint_path: 文件夹地址  
         checkpoint保存位置   
-    - net_mode: 0..2  
+&emsp;&emsp; * net_mode: 0..2  
        网络结构，默认为 0。0为Resnet_v2_18；1为Resnet_v2_34；2为Resnet_v2_50  
   
   
@@ -98,11 +98,11 @@ python train.py   --train_dir=checkpoint_vgg16   --dataset_name=flowers   --data
 python train.py   --train_dir=checkpoint_resnet_v1_50   --dataset_name=flowers   --dataset_dir=train_s   --model_name=resnet_v1_50   --checkpoint_path=resnet_v1_50.ckpt   --max_number_of_steps=3000   --batch_size=16   --learning_rate=0.001   --save_interval_secs=300   --save_summaries_secs=300   --log_every_n_steps=100   --optimizer=adam   --weight_decay=0.00004   --checkpoint_exclude_scopes=resnet_v1_50/logits   --trainable_scopes=resnet_v1_50/logits_new, resnet_v1_50/block4     
 使用全训练集时需修改datasets/flowers中的SPLITS_TO_SIZES；然后将训练参数dataset_dir设为train；将max_number_of_steps适当调高（如12000）  
 关于模型微调方式的设置：  
-    - 用新输出层替换旧输出层：在nets/resnet_v1.py中将旧输出层注释掉；训练参数trainable_scopes设为resnet_v1_50/logits_new  
-    - 用带隐层的新输出层替换旧输出层：在nets/resnet_v1.py中保留旧输出层；训练参数checkpoint_exclude_scopes设为resnet_v1_50/logits；trainable_scopes设为resnet_v1_50/logits_new， resnet_v1_50/logits  
-    - 加入新输出层，保留旧输出层并对其进行训练：在nets/resnet_v1.py中保留旧输出层；训练参数checkpoint_exclude_scopes设为空；trainable_scopes设为resnet_v1_50/logits_new， resnet_v1_50/logits  
-    - 加入新输出层，保留旧输出层而不对其进行训练：在nets/resnet_v1.py中保留旧输出层；训练参数checkpoint_exclude_scopes设为空；trainable_scopes设为resnet_v1_50/logits_new  
-    - 用新输出层替换旧输出层，并训练最后一个block：在nets/resnet_v1.py中将旧输出层注释掉；训练参数trainable_scopes设为resnet_v1_50/logits_new，resnet_v1_50/block4   
+&emsp;&emsp; * 用新输出层替换旧输出层：在nets/resnet_v1.py中将旧输出层注释掉；训练参数trainable_scopes设为resnet_v1_50/logits_new  
+&emsp;&emsp; * 用带隐层的新输出层替换旧输出层：在nets/resnet_v1.py中保留旧输出层；训练参数checkpoint_exclude_scopes设为resnet_v1_50/logits；trainable_scopes设为resnet_v1_50/logits_new， resnet_v1_50/logits  
+&emsp;&emsp; * 加入新输出层，保留旧输出层并对其进行训练：在nets/resnet_v1.py中保留旧输出层；训练参数checkpoint_exclude_scopes设为空；trainable_scopes设为resnet_v1_50/logits_new， resnet_v1_50/logits  
+&emsp;&emsp; * 加入新输出层，保留旧输出层而不对其进行训练：在nets/resnet_v1.py中保留旧输出层；训练参数checkpoint_exclude_scopes设为空；trainable_scopes设为resnet_v1_50/logits_new  
+&emsp;&emsp; * 用新输出层替换旧输出层，并训练最后一个block：在nets/resnet_v1.py中将旧输出层注释掉；训练参数trainable_scopes设为resnet_v1_50/logits_new，resnet_v1_50/block4   
   
 ### 验证Resnet_v1_50  
 python verify.py   --checkpoint_path=checkpoint_resnet_v1_50   --eval_dir=verify/data   --dataset_name=flowers   --dataset_split_name=validation   --dataset_dir=verify   --model_name=resnet_v1_50    
@@ -119,11 +119,11 @@ python draw_results.py
 切换至android目录下  
 前往 https://github.com/tensorflow/tensorflow/tree/master/tensorflow/examples/android 下载Tensorflow Android Camare demo，  
 将android文件夹中的文件替换demo中assets文件夹的原始文件，并在 ClassifierActivity.java 文件中进行相应修改:  
-    - INPUT_SIZE 设为 208  
-    - IMAGE_MEAN 设为 0  
-    - IMAGE_STD 设为 1  
-    - MODEL_FILE 设为 "file:///android_asset/cats_and_dogs.pb"  
-    - LABEL_FILE 设为 "file:///android_asset/cats_and_dogs.txt"  
+&emsp;&emsp; * INPUT_SIZE 设为 208  
+&emsp;&emsp; * IMAGE_MEAN 设为 0  
+&emsp;&emsp; * IMAGE_STD 设为 1  
+&emsp;&emsp; * MODEL_FILE 设为 "file:///android_asset/cats_and_dogs.pb"  
+&emsp;&emsp; * LABEL_FILE 设为 "file:///android_asset/cats_and_dogs.txt"  
   
   
 ## 微信小程序  
