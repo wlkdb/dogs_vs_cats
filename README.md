@@ -4,7 +4,7 @@
 各程序运行用时及成功后截图见success screenshot文件  
   
 ## 运行环境  
-Python 3.5.4，Tensorflow-gpu 1.1.0  
+Python 3.6，Tensorflow-gpu 1.4，Pillow库
 论文中使用的是配置了2个Tesla M60的美团云GPU主机  
 由于截图时美团云GPU主机售罄，故success screenshot文件中改为使用配置了1个Tesla P100的Google云GPU主机  
   
