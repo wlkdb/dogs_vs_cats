@@ -116,8 +116,8 @@ python test.py   --checkpoint_path checkpoint_resnet_v1_50   --model_name resnet
 python draw_results.py  
   
 ## Android  
-切换至android目录下  
-前往 https://github.com/tensorflow/tensorflow/tree/master/tensorflow/examples/android 下载Tensorflow Android Camare demo，将android文件夹中的文件替换demo中assets文件夹的原始文件，并在 ClassifierActivity.java 文件中进行相应修改:  
+前往 https://github.com/tensorflow/tensorflow/tree/master/tensorflow/examples/android 下载Tensorflow Android Camare demo，
+用android文件夹中的文件替换demo中assets文件夹的原始文件，并在 ClassifierActivity.java 文件中进行相应修改:  
 * INPUT_SIZE 设为 208  
 * IMAGE_MEAN 设为 0  
 * IMAGE_STD 设为 1  
