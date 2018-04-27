@@ -59,9 +59,9 @@ python verify.py
 * net_mode: 0..2  
 &emsp;&emsp;网络结构，默认为 0。0为Resnet_v2_18；1为Resnet_v2_34；2为Resnet_v2_50  
           
-### 测试，结果输出到本目录下 output.csv  
+### 测试，结果输出到本目录下的 output.csv  
 python test.py  
-&emsp;&emsp;参数设置  
+参数设置  
 * checkpoint_path: 文件夹地址  
 &emsp;&emsp;checkpoint保存位置   
 * net_mode: 0..2  
@@ -96,8 +96,8 @@ python train.py   --train_dir=checkpoint_vgg16   --dataset_name=flowers   --data
   
 ### 微调Resnet_v1_50  
 python train.py   --train_dir=checkpoint_resnet_v1_50   --dataset_name=flowers   --dataset_dir=train_s   --model_name=resnet_v1_50   --checkpoint_path=resnet_v1_50.ckpt   --max_number_of_steps=3000   --batch_size=16   --learning_rate=0.001   --save_interval_secs=300   --save_summaries_secs=300   --log_every_n_steps=100   --optimizer=adam   --weight_decay=0.00004   --checkpoint_exclude_scopes=resnet_v1_50/logits   --trainable_scopes=resnet_v1_50/logits_new, resnet_v1_50/block4     
-&emsp;&emsp;使用全训练集时需修改datasets/flowers中的SPLITS_TO_SIZES；然后将训练参数dataset_dir设为train；将max_number_of_steps适当调高（如12000）  
-&emsp;&emsp;关于模型微调方式的设置：  
+使用全训练集时需修改datasets/flowers中的SPLITS_TO_SIZES；然后将训练参数dataset_dir设为train；将max_number_of_steps适当调高（如12000）  
+模型微调方式的设置：  
 * 用新输出层替换旧输出层：在nets/resnet_v1.py中将旧输出层注释掉；训练参数trainable_scopes设为resnet_v1_50/logits_new  
 * 用带隐层的新输出层替换旧输出层：在nets/resnet_v1.py中保留旧输出层；训练参数checkpoint_exclude_scopes设为resnet_v1_50/logits；trainable_scopes设为resnet_v1_50/logits_new， resnet_v1_50/logits  
 * 加入新输出层，保留旧输出层并对其进行训练：在nets/resnet_v1.py中保留旧输出层；训练参数checkpoint_exclude_scopes设为空；trainable_scopes设为resnet_v1_50/logits_new， resnet_v1_50/logits  
@@ -117,8 +117,7 @@ python draw_results.py
   
 ## Android  
 切换至android目录下  
-前往 https://github.com/tensorflow/tensorflow/tree/master/tensorflow/examples/android 下载Tensorflow Android Camare demo，  
-将android文件夹中的文件替换demo中assets文件夹的原始文件，并在 ClassifierActivity.java 文件中进行相应修改:  
+前往 https://github.com/tensorflow/tensorflow/tree/master/tensorflow/examples/android 下载Tensorflow Android Camare demo，将android文件夹中的文件替换demo中assets文件夹的原始文件，并在 ClassifierActivity.java 文件中进行相应修改:  
 * INPUT_SIZE 设为 208  
 * IMAGE_MEAN 设为 0  
 * IMAGE_STD 设为 1  
@@ -128,9 +127,8 @@ python draw_results.py
   
 ## 微信小程序  
 切换至weixin目录下  
-将相同迁移学习模型下的checkpoint相关文件移至weixin/checkpoint目录下  
-运行 python get_img_category.py 将识别结果输出至控制台  
-搭建服务端时，服务端将收到的图片保存，并调用  python get_img_category.py --infile *图片文件位置*  来获取识别结果  
+将相同迁移学习模型下的checkpoint相关文件移至weixin/checkpoint目录下，运行 python get_img_category.py 将识别结果输出至控制台。
+搭建服务端时，服务端将收到的图片保存，并调用  python get_img_category.py --infile *图片文件位置*  来获取识别结果。
 越接近0越可能为猫，越接近1越可能为狗  
   
 
