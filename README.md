@@ -12,26 +12,26 @@ Python 3.5.4，Tensorflow-gpu 1.1.0
 ## 数据分析  
 切换至data_analysis目录下  
   
-### 分析训练集图片尺寸    
+#### 分析训练集图片尺寸    
 python data_analysis.py    
   
-### 分析测试集图片尺寸    
+#### 分析测试集图片尺寸    
 python data_analysis.py --path ../test    
   
-### 创建训练集与测试集样本以用于特征观察（已存在）    
+#### 创建训练集与测试集样本以用于特征观察（已存在）    
 python create_sample.py    
     
 
 ## 从头训练  
 切换至train_from_beginning目录下  
   
-### 创建小数据集  
+#### 创建小数据集  
 python create_train_small_set.py  
   
-### 创建验证集  
+#### 创建验证集  
 python create_verification_set.py  
   
-### 训练  
+#### 训练  
 python train.py  
 参数设置  
 * train_dir: 文件夹地址   
@@ -51,7 +51,7 @@ python train.py
 * batch_size: 正整数  
 &emsp;&emsp;每批次数据大小，默认为64  
           
-### 验证  
+#### 验证  
 python verify.py  
 参数设置  
 * checkpoint_path: 文件夹地址  
@@ -59,7 +59,7 @@ python verify.py
 * net_mode: 0..2  
 &emsp;&emsp;网络结构，默认为 0。0为Resnet_v2_18；1为Resnet_v2_34；2为Resnet_v2_50  
           
-### 测试，结果输出到本目录下的 output.csv  
+#### 测试，结果输出到本目录下的 output.csv  
 python test.py  
 参数设置  
 * checkpoint_path: 文件夹地址  
@@ -72,29 +72,29 @@ python test.py
 切换至transfer_learning目录下，其中的大部分文件都是以slim中的原文件为基础，  
 运行文件时需要再手动修改配置的地方以 \*\*\* 标明   
   
-### 创建小数据集    
+#### 创建小数据集    
 python create_train_small_set.py  
 python download_and_convert_data.py \   --dataset_name=flowers \   --dataset_dir=train_s  
   
-### 创建全数据集  
+#### 创建全数据集  
 python create_train_whole_set.py  
 python download_and_convert_data.py \   --dataset_name=flowers \   --dataset_dir=train  
   
-### 创建验证集  
+#### 创建验证集  
 将datasets/download_and_convert_flowers.py中的_NUM_VALIDATION改为10000  
 python create_verification_set.py  
 python download_and_convert_data.py \   --dataset_name=flowers \   --dataset_dir=verify  
   
-### 下载预训练模型  
+#### 下载预训练模型  
 wget http://download.tensorflow.org/models/vgg_16_2016_08_28.tar.gz  
 wget http://download.tensorflow.org/models/resnet_v1_50_2016_08_28.tar.gz  
 tar zxvf vgg_16_2016_08_28.tar.gz   
 tar zxvg resnet_v1_50_2016_08_28.tar.gz   
   
-### 微调基准模型Vgg16  
+#### 微调基准模型Vgg16  
 python train.py   --train_dir=checkpoint_vgg16   --dataset_name=flowers   --dataset_dir=train_s   --model_name=vgg_16   --checkpoint_path=vgg_16.ckpt  --checkpoint_exclude_scopes=vgg_16/fc8    --trainable_scopes=vgg_16/fc8   --max_number_of_steps=3000   --batch_size=16   --learning_rate=0.01   --learning_rate_decay_type=fixed   --save_interval_secs=600   --save_summaries_secs=600   --log_every_n_steps=100   --optimizer=rmsprop  --weight_decay=0.00004  
   
-### 微调Resnet_v1_50  
+#### 微调Resnet_v1_50  
 python train.py   --train_dir=checkpoint_resnet_v1_50   --dataset_name=flowers   --dataset_dir=train_s   --model_name=resnet_v1_50   --checkpoint_path=resnet_v1_50.ckpt   --max_number_of_steps=3000   --batch_size=16   --learning_rate=0.001   --save_interval_secs=300   --save_summaries_secs=300   --log_every_n_steps=100   --optimizer=adam   --weight_decay=0.00004   --checkpoint_exclude_scopes=resnet_v1_50/logits   --trainable_scopes=resnet_v1_50/logits_new, resnet_v1_50/block4     
 使用全训练集时需修改datasets/flowers中的SPLITS_TO_SIZES；然后将训练参数dataset_dir设为train；将max_number_of_steps适当调高（如12000）  
 模型微调方式的设置：  
@@ -104,10 +104,10 @@ python train.py   --train_dir=checkpoint_resnet_v1_50   --dataset_name=flowers  
 * 加入新输出层，保留旧输出层而不对其进行训练：在nets/resnet_v1.py中保留旧输出层；训练参数checkpoint_exclude_scopes设为空；trainable_scopes设为resnet_v1_50/logits_new  
 * 用新输出层替换旧输出层，并训练最后一个block：在nets/resnet_v1.py中将旧输出层注释掉；训练参数trainable_scopes设为resnet_v1_50/logits_new，resnet_v1_50/block4   
   
-### 验证Resnet_v1_50  
+#### 验证Resnet_v1_50  
 python verify.py   --checkpoint_path=checkpoint_resnet_v1_50   --eval_dir=verify/data   --dataset_name=flowers   --dataset_split_name=validation   --dataset_dir=verify   --model_name=resnet_v1_50    
   
-### 测试Resnet_v1_50  
+#### 测试Resnet_v1_50  
 python test.py   --checkpoint_path checkpoint_resnet_v1_50   --model_name resnet_v1_50   --infile ../test   
   
   
