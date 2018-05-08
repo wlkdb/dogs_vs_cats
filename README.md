@@ -21,7 +21,7 @@ python data_analysis.py --path ../test
 #### 创建训练集与测试集样本以用于特征观察（已存在）    
 python create_sample.py    
     
-
+    
 ## 从头训练  
 切换至train_from_beginning目录下  
   
@@ -66,24 +66,25 @@ python test.py
 &emsp;&emsp;checkpoint保存位置   
 * net_mode: 0..2  
 &emsp;&emsp;网络结构，默认为 0。0为Resnet_v2_18；1为Resnet_v2_34；2为Resnet_v2_50  
-  
-  
+
+#### 异常数据处理  
+依赖于基准模型，故放在微调基准模型后介绍    
+    
+    
 ## 迁移学习  
-切换至transfer_learning目录下，其中的大部分文件都是以slim中的原文件为基础，  
-运行文件时需要再手动修改配置的地方以 \*\*\* 标明   
+切换至transfer_learning目录下，运行文件时需要再手动修改配置的地方以 \*\*\* 标明   
   
 #### 创建小数据集    
 python create_train_small_set.py  
-python download_and_convert_data.py \   --dataset_name=flowers \   --dataset_dir=train_s  
+python convert_data.py   --dataset_dir=train_s   --type=0
   
 #### 创建全数据集  
 python create_train_whole_set.py  
-python download_and_convert_data.py \   --dataset_name=flowers \   --dataset_dir=train  
+python convert_data.py   --dataset_dir=train   --type=0  
   
 #### 创建验证集  
-将datasets/download_and_convert_flowers.py中的_NUM_VALIDATION改为10000  
 python create_verification_set.py  
-python download_and_convert_data.py \   --dataset_name=flowers \   --dataset_dir=verify  
+python convert_data.py   --dataset_dir=verify   --type=1  
   
 #### 下载预训练模型  
 wget http://download.tensorflow.org/models/vgg_16_2016_08_28.tar.gz  
@@ -92,11 +93,17 @@ tar zxvf vgg_16_2016_08_28.tar.gz
 tar zxvg resnet_v1_50_2016_08_28.tar.gz   
   
 #### 微调基准模型Vgg16  
-python train.py   --train_dir=checkpoint_vgg16   --dataset_name=flowers   --dataset_dir=train_s   --model_name=vgg_16   --checkpoint_path=vgg_16.ckpt  --checkpoint_exclude_scopes=vgg_16/fc8    --trainable_scopes=vgg_16/fc8   --max_number_of_steps=3000   --batch_size=16   --learning_rate=0.01   --learning_rate_decay_type=fixed   --save_interval_secs=600   --save_summaries_secs=600   --log_every_n_steps=100   --optimizer=rmsprop  --weight_decay=0.00004  
+python train.py   --train_dir=checkpoint_vgg16   --dataset_dir=train_s   --dataset_size=1500   --model_name=vgg_16   --checkpoint_path=vgg_16.ckpt  --checkpoint_exclude_scopes=vgg_16/fc8    --trainable_scopes=vgg_16/fc8   --max_number_of_steps=3000   --batch_size=16   --learning_rate=0.01   --save_interval_secs=600   --log_every_n_steps=100   --optimizer=rmsprop  --weight_decay=0.00004  
   
+#### 可能的异常数据获取，默认存放于outliers下（已存在）   
+python analysis_outliers.py   
+   
+#### 异常数据处理   
+python del_outliers_image.py    
+   
 #### 微调Resnet_v1_50  
-python train.py   --train_dir=checkpoint_resnet_v1_50   --dataset_name=flowers   --dataset_dir=train_s   --model_name=resnet_v1_50   --checkpoint_path=resnet_v1_50.ckpt   --max_number_of_steps=3000   --batch_size=16   --learning_rate=0.001   --save_interval_secs=300   --save_summaries_secs=300   --log_every_n_steps=100   --optimizer=adam   --weight_decay=0.00004   --checkpoint_exclude_scopes=resnet_v1_50/logits   --trainable_scopes=resnet_v1_50/logits_new, resnet_v1_50/block4     
-使用全训练集时需修改datasets/flowers中的SPLITS_TO_SIZES；然后将训练参数dataset_dir设为train；将max_number_of_steps适当调高（如12000）  
+python train.py   --train_dir=checkpoint_resnet_v1_50   --dataset_dir=train_s   --dataset_size=1500   --model_name=resnet_v1_50   --checkpoint_path=resnet_v1_50.ckpt   --max_number_of_steps=3000   --batch_size=16   --learning_rate=0.001   --save_interval_secs=300   --log_every_n_steps=100   --optimizer=adam   --weight_decay=0.00004   --checkpoint_exclude_scopes=resnet_v1_50/logits   --trainable_scopes=resnet_v1_50/logits_new, resnet_v1_50/block4     
+使用全训练集时需将训练参数dataset_dir设为train；将dataset_size设为全训练集的图片数量；将max_number_of_steps适当调高（如12000）  
 模型微调方式的设置：  
 * 用新输出层替换旧输出层：在nets/resnet_v1.py中将旧输出层注释掉；训练参数trainable_scopes设为resnet_v1_50/logits_new  
 * 用带隐层的新输出层替换旧输出层：在nets/resnet_v1.py中保留旧输出层；训练参数checkpoint_exclude_scopes设为resnet_v1_50/logits；trainable_scopes设为resnet_v1_50/logits_new， resnet_v1_50/logits  
@@ -105,7 +112,7 @@ python train.py   --train_dir=checkpoint_resnet_v1_50   --dataset_name=flowers  
 * 用新输出层替换旧输出层，并训练最后一个block：在nets/resnet_v1.py中将旧输出层注释掉；训练参数trainable_scopes设为resnet_v1_50/logits_new，resnet_v1_50/block4   
   
 #### 验证Resnet_v1_50  
-python verify.py   --checkpoint_path=checkpoint_resnet_v1_50   --eval_dir=verify/data   --dataset_name=flowers   --dataset_split_name=validation   --dataset_dir=verify   --model_name=resnet_v1_50    
+python verify.py   --checkpoint_path=checkpoint_resnet_v1_50   --eval_dir=verify/data   --dataset_dir=verify   --dataset_size=10000  --model_name=resnet_v1_50    
   
 #### 测试Resnet_v1_50  
 python test.py   --checkpoint_path checkpoint_resnet_v1_50   --model_name resnet_v1_50   --infile ../test   

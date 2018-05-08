@@ -24,8 +24,9 @@ import tarfile
 from six.moves import urllib
 import tensorflow as tf
 
-LABELS_FILENAME = 'labels.txt'
+slim = tf.contrib.slim
 
+LABELS_FILENAME = 'labels.txt'
 
 def int64_feature(values):
   """Returns a TF-Feature of int64s.
@@ -148,3 +149,37 @@ def read_label_file(dataset_dir, filename=LABELS_FILENAME):
     index = line.index(':')
     labels_to_class_names[int(line[:index])] = line[index+1:]
   return labels_to_class_names
+
+# 获取训练数据集
+def get_dataset(dataset_type, dataset_dir, dataset_size, num_classes):
+    file_pattern = dataset_type + '_*.tfrecord'
+    file_pattern = os.path.join(dataset_dir, file_pattern)
+    reader = tf.TFRecordReader
+    keys_to_features = {
+            'image/encoded': tf.FixedLenFeature((), tf.string, default_value=''),
+            'image/format': tf.FixedLenFeature((), tf.string, default_value='png'),
+            'image/class/label': tf.FixedLenFeature(
+                    [], tf.int64, default_value=tf.zeros([], dtype=tf.int64)),
+    }
+    items_to_handlers = {
+            'image': slim.tfexample_decoder.Image(),
+            'label': slim.tfexample_decoder.Tensor('image/class/label'),
+    }
+    
+    decoder = slim.tfexample_decoder.TFExampleDecoder(keys_to_features, items_to_handlers)
+    labels_to_names = None
+    if has_labels(dataset_dir):
+        labels_to_names = read_label_file(dataset_dir)
+    _ITEMS_TO_DESCRIPTIONS = {
+        'image': 'input data',
+        'label': 'cat or dog',
+    }
+    return slim.dataset.Dataset(
+            data_sources=file_pattern,
+            reader=reader,
+            decoder=decoder,
+            num_samples=dataset_size,
+            items_to_descriptions=_ITEMS_TO_DESCRIPTIONS, 
+            num_classes=num_classes,
+            labels_to_names=labels_to_names)
+    

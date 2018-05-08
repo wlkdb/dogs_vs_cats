@@ -6,7 +6,7 @@
 
 from __future__ import print_function
 from nets import nets_factory
-from preprocessing import preprocessing_factory
+from preprocessing import vgg_preprocessing
 import sys
 sys.path.append('../../tensorflow/models/slim/') # add slim to PYTHONPATH
 
@@ -37,13 +37,12 @@ else:
 # 读入图像、预处理模型、网络模型
 image_string = tf.placeholder(tf.string) 
 image = tf.image.decode_jpeg(image_string, channels=3, try_recover_truncated=True, acceptable_fraction=0.3) 
-image_preprocessing_fn = preprocessing_factory.get_preprocessing(preprocessing_name, is_training=False)
 network_fn = nets_factory.get_network_fn(FLAGS.model_name, FLAGS.num_classes, is_training=False)
 
 # 数据预处理
 if FLAGS.test_image_size is None:
   test_image_size = network_fn.default_image_size
-processed_image = image_preprocessing_fn(image, test_image_size, test_image_size)
+processed_image = vgg_preprocessing.preprocess_image(image, test_image_size, test_image_size, is_training=False)
 processed_images  = tf.expand_dims(processed_image, 0) 
 
 # 获取输出
