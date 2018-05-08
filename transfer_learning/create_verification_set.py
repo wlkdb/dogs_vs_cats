@@ -18,8 +18,19 @@ checkDir('verify/data')
 checkDir('verify/data/dog/')
 checkDir('verify/data/cat/')
 
-for i in range(7500, 12500):
-   name = 'dog.'+str(i)+'.jpg'
-   shutil.copyfile('../train/'+name, 'verify/data/dog/'+name)
-   name = 'cat.'+str(i)+'.jpg'
-   shutil.copyfile('../train/'+name, 'verify/data/cat/'+name)
+num_dog = 0
+num_cat = 0
+for i in range(5000, 12600):
+    name = 'dog.'+str(i)+'.jpg'
+    if num_dog < 5000 and os.path.exists('../train/'+name):
+        shutil.copyfile('../train/'+name, 'verify/data/dog/'+name)
+        num_dog += 1
+      
+    name = 'cat.'+str(i)+'.jpg'
+    if num_cat < 5000 and os.path.exists('../train/'+name):
+        shutil.copyfile('../train/'+name, 'verify/data/cat/'+name)
+        num_cat += 1
+        
+    if num_dog >= 5000 and num_cat >= 5000:
+        break
+        

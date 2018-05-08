@@ -18,9 +18,11 @@ checkDir('train/data')
 checkDir('train/data/dog/')
 checkDir('train/data/cat/')
 
-for i in range(0, 12500):
+for i in range(0, 12600):
    name = 'dog.'+str(i)+'.jpg'
-   shutil.copyfile('../train/'+name, 'train/data/dog/'+name)
+   if os.path.exists('../train/'+name):
+       shutil.copyfile('../train/'+name, 'train/data/dog/'+name)
    name = 'cat.'+str(i)+'.jpg'
-   shutil.copyfile('../train/'+name, 'train/data/cat/'+name)
-  
+   if os.path.exists('../train/'+name):
+       shutil.copyfile('../train/'+name, 'train/data/cat/'+name)
+       
