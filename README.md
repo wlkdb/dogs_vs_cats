@@ -95,11 +95,11 @@ tar zxvg resnet_v1_50_2016_08_28.tar.gz
 #### 微调基准模型Vgg16  
 python train.py   --train_dir=checkpoint_vgg16   --dataset_dir=train_s   --dataset_size=1500   --model_name=vgg_16   --checkpoint_path=vgg_16.ckpt  --checkpoint_exclude_scopes=vgg_16/fc8    --trainable_scopes=vgg_16/fc8   --max_number_of_steps=3000   --batch_size=16   --learning_rate=0.01   --save_interval_secs=600   --log_every_n_steps=100   --optimizer=rmsprop  --weight_decay=0.00004  
   
-#### 可能的异常数据获取，默认存放于outliers下（已存在）   
+#### 可能的异常数据获取，获取后默认存放于outliers下（已存在）   
 python analysis_outliers.py   --checkpoint_path checkpoint_vgg16 --model_name vgg_16 --infile ../train
    
 #### 异常数据处理   
-python del_outliers_image.py    
+python handle_outliers_image.py    
    
 #### 微调Resnet_v1_50  
 python train.py   --train_dir=checkpoint_resnet_v1_50   --dataset_dir=train_s   --dataset_size=1500   --model_name=resnet_v1_50   --checkpoint_path=resnet_v1_50.ckpt   --max_number_of_steps=3000   --batch_size=16   --learning_rate=0.001   --save_interval_secs=300   --log_every_n_steps=100   --optimizer=adam   --weight_decay=0.00004   --checkpoint_exclude_scopes=resnet_v1_50/logits   --trainable_scopes=resnet_v1_50/logits_new, resnet_v1_50/block4     
