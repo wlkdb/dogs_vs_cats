@@ -20,6 +20,9 @@ python data_analysis.py --path ../test
   
 #### 创建训练集与测试集样本以用于特征观察（已存在）    
 python create_sample.py    
+
+#### 异常数据处理  
+依赖于基准模型，故放在微调基准模型后介绍    
     
     
 ## 从头训练  
@@ -66,9 +69,6 @@ python test.py
 &emsp;&emsp;checkpoint保存位置   
 * net_mode: 0..2  
 &emsp;&emsp;网络结构，默认为 0。0为Resnet_v2_18；1为Resnet_v2_34；2为Resnet_v2_50  
-
-#### 异常数据处理  
-依赖于基准模型，故放在微调基准模型后介绍    
     
     
 ## 迁移学习  
@@ -96,7 +96,7 @@ tar zxvg resnet_v1_50_2016_08_28.tar.gz
 python train.py   --train_dir=checkpoint_vgg16   --dataset_dir=train_s   --dataset_size=1500   --model_name=vgg_16   --checkpoint_path=vgg_16.ckpt  --checkpoint_exclude_scopes=vgg_16/fc8    --trainable_scopes=vgg_16/fc8   --max_number_of_steps=3000   --batch_size=16   --learning_rate=0.01   --save_interval_secs=600   --log_every_n_steps=100   --optimizer=rmsprop  --weight_decay=0.00004  
   
 #### 可能的异常数据获取，默认存放于outliers下（已存在）   
-python analysis_outliers.py   
+python analysis_outliers.py   --checkpoint_path checkpoint_vgg16 --model_name vgg_16 --infile ../train
    
 #### 异常数据处理   
 python del_outliers_image.py    
