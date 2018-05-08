@@ -78,20 +78,12 @@ python test.py
 python create_train_small_set.py  
 python convert_data.py   --dataset_dir=train_s   --type=0
   
-#### 创建全数据集  
-python create_train_whole_set.py  
-python convert_data.py   --dataset_dir=train   --type=0  
-  
-#### 创建验证集  
-python create_verification_set.py  
-python convert_data.py   --dataset_dir=verify   --type=1  
-  
 #### 下载预训练模型  
 wget http://download.tensorflow.org/models/vgg_16_2016_08_28.tar.gz  
 wget http://download.tensorflow.org/models/resnet_v1_50_2016_08_28.tar.gz  
 tar zxvf vgg_16_2016_08_28.tar.gz   
 tar zxvg resnet_v1_50_2016_08_28.tar.gz   
-  
+   
 #### 微调基准模型Vgg16  
 python train.py   --train_dir=checkpoint_vgg16   --dataset_dir=train_s   --dataset_size=1500   --model_name=vgg_16   --checkpoint_path=vgg_16.ckpt  --checkpoint_exclude_scopes=vgg_16/fc8    --trainable_scopes=vgg_16/fc8   --max_number_of_steps=3000   --batch_size=16   --learning_rate=0.01   --save_interval_secs=600   --log_every_n_steps=100   --optimizer=rmsprop  --weight_decay=0.00004  
   
@@ -99,7 +91,11 @@ python train.py   --train_dir=checkpoint_vgg16   --dataset_dir=train_s   --datas
 python analysis_outliers.py   --checkpoint_path checkpoint_vgg16 --model_name vgg_16 --infile ../train
    
 #### 异常数据处理   
-python handle_outliers_image.py    
+python handle_outliers_image.py   
+   
+#### 创建全数据集  
+python create_train_whole_set.py  
+python convert_data.py   --dataset_dir=train   --type=0   
    
 #### 微调Resnet_v1_50  
 python train.py   --train_dir=checkpoint_resnet_v1_50   --dataset_dir=train_s   --dataset_size=1500   --model_name=resnet_v1_50   --checkpoint_path=resnet_v1_50.ckpt   --max_number_of_steps=3000   --batch_size=16   --learning_rate=0.001   --save_interval_secs=300   --log_every_n_steps=100   --optimizer=adam   --weight_decay=0.00004   --checkpoint_exclude_scopes=resnet_v1_50/logits   --trainable_scopes=resnet_v1_50/logits_new, resnet_v1_50/block4     
@@ -111,6 +107,10 @@ python train.py   --train_dir=checkpoint_resnet_v1_50   --dataset_dir=train_s   
 * 加入新输出层，保留旧输出层而不对其进行训练：在nets/resnet_v1.py中保留旧输出层；训练参数checkpoint_exclude_scopes设为空；trainable_scopes设为resnet_v1_50/logits_new  
 * 用新输出层替换旧输出层，并训练最后一个block：在nets/resnet_v1.py中将旧输出层注释掉；训练参数trainable_scopes设为resnet_v1_50/logits_new，resnet_v1_50/block4   
   
+#### 创建验证集  
+python create_verification_set.py  
+python convert_data.py   --dataset_dir=verify   --type=1  
+     
 #### 验证Resnet_v1_50  
 python verify.py   --checkpoint_path=checkpoint_resnet_v1_50   --eval_dir=verify/data   --dataset_dir=verify   --dataset_size=10000  --model_name=resnet_v1_50    
   
